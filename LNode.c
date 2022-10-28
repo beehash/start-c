@@ -85,50 +85,6 @@ static Status NodeDelete(lnode *L, int i) {
   free(q);
   return OK;
 }
-// mergesortedLNode 方法1
-static plnode mergesortedLNode(plnode node1, plnode node2) {
-  plnode head1 = node1->next; // 获取首元结点
-  plnode head2 = node2->next; // 获取首元结点
-  plnode node = InitLNode(); // 新空链表
-  plnode head = node; // 用来操作地址的 node
-  plnode tmp; // 暂存结点 
-  // head1 256 head2 147
-  while(head1 != node1 && head2 != node2) {// 尾结点判断
-    if(head1->data.price >= head2->data.price) {// head2 <= head1 head->next = head2
-      // head2 head1; head2++; 5, 4 
-      tmp = head2->next; // 暂存 head2->next 结点位置
-      head->next = head2; // head->next = head2, head的下一个指针 指向 head2 的当前结点位置
-
-      head = head->next; // head 指针移动到下一个结点位置
-      head2 = tmp; // head2 指针指向下一个结点位置
-    } else {// head1 < head2 head->next = head1;
-      tmp = head1->next; // 暂存head1->next 结点位置
-      head->next = head1; // head 的下一个指针指向 head1 的结点位置
-
-      head = head->next; // head 指针指向下一个结点位置
-      head1 = tmp; // head1 指针指向下一个结点位置
-    }
-  }
-
-  if(head1 == node1) { // head1 到结尾
-    tmp = head2;
-    while(head2->next != node2) {
-      head2 = head2->next;
-    }
-    head2->next = head;
-    head->next = tmp;
-  } 
-  if(head2 == node2) { // head2 到结尾
-    tmp = head1;
-    while(head1->next != node1) {
-      head1 = head1->next;
-    }
-    head1->next = head;
-    head->next = tmp;
-  }
-
-  return node->next;
-}
 /**
 *
 * Book book1 = {"wf", "book", 2};
