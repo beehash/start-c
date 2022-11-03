@@ -22,16 +22,18 @@ typedef struct {
     float price; // 图书价格
 } Book;
 
-typedef struct {
-    Book *elem; // 存储空间的基地址
-    int length; // 图书表中当前图书个数
-} SqList; // 图书表的顺序存储结构类型为SqList
+typedef struct QLIST {
+  Book *elem; // 存储空间的基地址
+  int length; // 图书表中当前图书个数
+} SqList, *psqList; // 图书表的顺序存储结构类型为SqList
 
-static Status createList(SqList *L) { // 构造一个空的顺序表 L
-    L->elem = (Book *)malloc(MAXSIZE); // 为顺序表分配一个大小为 MAXSIZE 的数组空间
-    if(!L->elem) exit(OVERFLOW); // 存储分配失败退出
-    L->length = 0; // 空表长度为 0
-    return OK;
+static SqList createList() { // 构造一个空的顺序表 L
+  SqList L;
+  L.elem = (Book *)malloc(MAXSIZE); // 为顺序表分配一个大小为 MAXSIZE 的数组空间
+  if(!L.elem) exit(OVERFLOW); // 存储分配失败退出
+  L.length = 0; // 空表长度为 0
+
+  return L;
 }
 
 static void GetItem(SqList *L, int i, Book *e) {

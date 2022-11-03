@@ -20,11 +20,6 @@ typedef struct {
   float price; // 图书价格
 } Book;
 
-union BookStatus {
-  Book book;
-  int err;
-};
-
 typedef struct DuLNode {
   Book data;
   struct DuLNode *prev;
@@ -99,7 +94,7 @@ static void DuLNodeDelete(dulList *L, int i) { // (dulList L, int i) {
 }
 
 // 按位置获取对应位置的双链表
-dulList getDulNode(dulList L, int i) {
+static dulList getDulNode(dulList L, int i) {
   int j = 0; dulList p = L;
   while(p->next != L && j<i) {
     p = p->next;

@@ -1,5 +1,15 @@
 #include "LNode.c"
 
+typedef struct QLIST {
+  Book *elem; // 存储空间的基地址
+  int length; // 图书表中当前图书个数
+} SqList, *psqList; // 图书表的顺序存储结构类型为SqList
+
+typedef struct DuLNode {
+  Book data;
+  struct DuLNode *prev;
+  struct DuLNode *next;
+} dulnode, *dulList;
 /* 
 题目：
 将两个递增的有序链表合并为一个递增的有序链表。
@@ -212,20 +222,84 @@ static plnode revertLNode(plnode node) {
   plnode head = node->next;
   plnode node1 = node;
   plnode head1 = node1;
+  head1->next = head1;
   plnode tmp, tmp2;
 
-  while(head != node) {// head head1; 123 21->next head1->next = 321; 
-    tmp = head1->next; // head
-    tmp2 = head->next; // 5 17 12
-    head->next = tmp; // 5 1 head
+  while(head != node) {// head head1; 123 21->next head1->next = 321;
+    tmp = head->next;
+    tmp2 = head1;
 
-    tmp->next = head; // head 5 1 head
-    head1 = tmp;
-    head = tmp2;
+    head->next = head1->next;
+    head1->next = head;
+
+    head = tmp;
+    head1 = tmp2;
   }
 
-  return node1;
+  return node1->next;
 }
+/* 
+题目：
+设计一个算法，删除递增有序链表中值大于mink且小于maxk的所有元素
+(mink,maxk是给定的两个参数，其值可以和表中的元素相同，也可以不同)
+*/
+static plnode deleteLNodefromRange(plnode node, int mink, int maxk) {
+  plnode head = node->next;
+  plnode prevhead;
+  while(head != node) { 
+    if(head->data.price > mink && head->data.price < maxk) {
+      prevhead->next = prevhead->next->next;
+      head = head->next;
+    }
+    prevhead = head;
+    head = head->next;
+  }
+  return node;
+}
+/* 
+已知p指向双向循环链表中的一个结点，其结点结构为 data、prior、next 三个域，
+写出算法 Exchange(p),交换p所指向的结点及其前驱结点的顺序 12 5 17 1
+*/
+static dulList Exchange(dulList p) {
+  dulList head = p;
+  dulList prevhead = p->prev;
+  
+  prevhead->prev->next = head; // p 的前驱结点的next 指向
+
+  prevhead->prev = head; // 原前驱结点的 prev 指向
+  prevhead->next = head->next; // 原前驱结点的next 指向
+
+  head->prev = prevhead->prev; // p结点的prev指向
+  head->next = prevhead; // p结点的next指向
+  
+  head->next->prev = prevhead; // 原后驱结点的prev指向
+  
+  return head;
+}
+
+/* 
+题目：
+已知长度为 n 的线性表 A 采用顺序存储结构，
+请写一个时间复杂度为 O(n)，空间复杂度为 O(1) 的算法，
+该算法课删除线性表中所有值为 item 的数据元素
+*/
+static psqList deleteListByValue(psqList list, int item) {
+  Book *elems = list->elem;
+  int len = list->length;
+  int flag = 0;
+  for(int i = 0; i < len; i++) {
+    if(elems[i].price == item) {
+      elems[i] = elems[i+1];
+      flag++;
+    }
+    if(flag > 0) {
+      elems[i] = elems[i+flag];
+    }
+  }
+  list->length = len;
+  return list;
+}
+
 /**
   Book book1 = { "wf", "book", 2 };
   Book book2 = { "wf2", "book2", 5 };
@@ -255,4 +329,21 @@ static plnode revertLNode(plnode node) {
   printf("%.f, %.f, %.f, ", node2->data.price, node2->next->data.price, node2->next->next->data.price);
   node1 = node2->next->next->next;
   printf("%.f, %.f", node1->data.price, node1->next->data.price);
+
+
+  SqList list = createList();
+
+  Book book1 = { "wf", "book", 1 };
+  Book book2 = { "wf2", "book2", 5 };
+  Book book3 = { "wf3", "book3", 17 };
+  Book book4 = { "wf3", "book3", 12 };
+
+  ListInsert(&list, 0, book1);
+  ListInsert(&list, 1, book2);
+  ListInsert(&list, 2, book3);
+  ListInsert(&list, 3, book4);
+
+  printf("%.f, %.f, %.f, %.f\n", list.elem[0].price, list.elem[1].price, list.elem[2].price, list.elem[3].price);
+  deleteListByValue(&list, 5);
+  printf("%.f, %.f, %.f, %p", list.elem[0].price, list.elem[1].price, list.elem[2].price, list.elem[3]);
  */

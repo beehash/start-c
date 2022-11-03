@@ -4,8 +4,12 @@
 
 #include "cainiaoexp.h"
 
+
+
+
 #define MESSAGE "hello"
-void ifdefinefn () {
+
+void ifdefinefn () { // ifndef ----- endif
     #ifndef MESSAGE
     #define MESSAGE "You wish!"
     #endif
@@ -13,13 +17,15 @@ void ifdefinefn () {
     printf( "redefine Message : %s\n",  MESSAGE);
 }
 
+// 变量指针操作
 void indexOpt() {
     int aa = 1;
     int *p2 = &aa;
-    printf( "index is : %d\n",  *p2);
-    printf( "index's address is : %p\n",  p2);
+    printf( "index is : %d\n",  *p2); // value
+    printf( "index's address is : %p\n",  p2); // address
 }
 
+// union
 void uionfn() {
     union DATA {
         int a;
@@ -41,6 +47,7 @@ void uionfn() {
     printf( "union.d's value is : %f\n",  data.d);
 }
 
+// two numbers
 void add() {
     int a, b;
     printf("please input two numbers, split with space:");
@@ -51,6 +58,7 @@ void add() {
     printf("%lf * %lf = %lf", c, d, c*d);
 }
 
+// 枚举
 void enumfn() {
     enum DAY {
         MON=1, TUE, WED, THU, FRI, SAT, SUN
@@ -62,10 +70,12 @@ void enumfn() {
     printf( "today is : %d\n",  day);
 }
 
+// 比较大小
 int vmax (int x, int y) {
     return x > y ? x : y;
 }
 
+// 函数指针操作
 void indexfunc(int (*getmax)(int, int)) {
     /* p 是函数指针 */
     int (*p)(int, int) = &vmax; // &可以省略'
@@ -77,6 +87,7 @@ void indexfunc(int (*getmax)(int, int)) {
     printf( "index's address is : %p\n",  *p);
 }
 
+// 通过索引获取数组的值
 void getItemByIndex() {
   int data[5] = {1,2,3,4,5 }, i;
   for(i=0; i<5; i++) {
@@ -85,6 +96,7 @@ void getItemByIndex() {
   printf("the length of data is: %llu\n", sizeof(data));
 }
 
+// 打印乘法表
 void multiTables() {
     for(int i = 1; i< 10; i++) {
         for(int j = 1; j<=i; j++) {
@@ -94,12 +106,14 @@ void multiTables() {
     }
 }
 
+// 斐波那契数列
 int fobocci(int n) {
     if(n == 0) return 0; // 是否是
     if(n == 1) return 1;
     return fobocci(n-1) + fobocci(n-2);
 }
 
+// 获取最大公约数
 void getGreatestCommonDivsor1(int a, int b) {
     int r;
     for(int i = 1; i <=a && i <=b; i++) {
@@ -110,6 +124,7 @@ void getGreatestCommonDivsor1(int a, int b) {
     printf("%d and %d the biggestcommon divsor number is: %d \n", a, b, r);
 }
 
+// 获取最大公倍数
 void getGreatestCommonDivsor2(const int list[]) {
     int min = list[0];
     int len = 0;
