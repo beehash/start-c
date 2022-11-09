@@ -439,8 +439,41 @@ static plnode deleteAbsSameLNode(plnode node, int n) {
 将其划分为两个不相交的子集A1和A2，
 元素个数分别是n1 和n2，A1和A2中元素之和分别为S1和S2.设计一个尽可能高效的划分算法，
 满足|n1-n2|最小且|S1-S2|最大。要求：
+时间复杂度: O(n)
+空间复杂度：O(1)
 */
-static int splitTwoLists(int *list1, int *list2) {
+static int splitTwoLists(int list[], int len) {
+  int diff1 = len, diff2 = 0, diff = 0;
+  int sum = 0, s1 = 0, s2 = 0, s = 0;
+  int m = 0, n1 = 0, n2 = 0, n = 0;
+  
+  for(int i = 0; i < len; i++) {
+    sum += list[i];
+  }
+  printf("list's summary is %d\n", sum);
+  for(int i = 0; i < len - 1; i++) {
+    n1 = len - i - 1; 
+    n2 = i + 1;
+    n = n2 - n1 > 0 ? n2 - n1 : n1 - n2; // |n2 - n1|
+    s1 += list[i];
+    s2 = sum - s1;
+    int s = s2 - s1 > 0 ? s2 - s1 : s1 - s2; // |s2 - s1|
+
+    if(diff2 < s) { // 最大
+      diff2 = s;
+    }
+    
+    if(n < diff1) { // 最小
+      diff1 = n;
+    }
+
+    if(diff2 - diff1 > diff) { // |s2 - s1| - |n1 - n2|
+      diff = diff2 - diff1;
+      m = i;
+    }
+  }
+
+  printf("m：%d, list[m]：%d\n", m, list[m]);// A1 {6, 5, 4, 2} A2 {8, 3, 1, 7, 9}
 
 }
 /**
