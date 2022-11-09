@@ -41,7 +41,10 @@ int main() {
   LNodeInsert(node2, 5, book6);
   LNodeInsert(node2, 6, book7);
 
-  plnode node = deleteAbsSameLNode(node1, 12);
-  printf("%s, %s, %s", node->data.no, node->next->data.no, node->next->next->data.no);
+  // plnode node = deleteAbsSameLNode(node1, 12);
+  plnode node = node1->next;
+  printf("%s, %s, %s\n", node->data.no, node->next->data.no, node->next->next->data.no);
+  int list[] = { 6, 5, 4, 2, 8, 3, 1, 7, 9 };
+  splitTwoLists(list, 9);
   return 0;
 }
