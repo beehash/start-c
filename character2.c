@@ -299,7 +299,150 @@ static psqList deleteListByValue(psqList list, int item) {
   list->length = len;
   return list;
 }
+/* 
+题目：
+已知一个带有表头结点的单链表，结点结构为（data，link），
+假设该链表只给出了头指针list。
+在不改变链表的前提下，请设计一个尽可能高效的算法
+查找链表中倒数第k个位置上的结点（k为正整数）。
+若查找成功，算法输出该结点的data域的值，并返回1，否则，只返回0。
+*/
+static int findLNodebyIndex(plnode node, int k) {
+  plnode head = node->next;
+  plnode head2 = head;
+  int j = 0, i= 0;
+  while(head != node) {
+    j++;
+    head = head->next;
+  }
+  while(i < j - k) {
+    i++;
+    head2 = head2->next;
+  }
 
+  printf("倒数第%d个结点的值data.price为：%.f\n", k, head2->data.price);
+  return  0;
+}
+/* 
+题目：
+设将 n（n>1）个整数存放到一维数组 R 中。
+试设计一个在时间和空间两方面都尽可能高效的算法。
+将 R 中保存的序列循环左移 p（0<p<n）个位置，
+即将 R 中的数据由（x0， x1，...，xn-1）变换为
+（ xp，xp+1，···xn-1，x0，x1， ···，xp-1）。
+思路分析：
+根据题目可得：采用顺序数据结构
+左移p个位置，那么，倒数第p个位置的变为数组第一个，数组第0个，变为数组第p个，数组最后一个变为 第 length-p+1
+空间复杂度：O(1),时间复杂度：O(n);
+*/
+static SqList moveNumList(SqList list, int p) {
+  int l = list.length; int j = 0;
+  Book tmp[p];
+
+  for(int i = 0; i < l; i++) {
+    if (i < p) { // list2 移动至首端
+      tmp[i] = list.elem[i];
+      list.elem[i] = list.elem[l-p+i]; // [0] = old[1] [1] = old[2] [2] = old[3]
+    } else { // list1 移动至尾部
+      list.elem[i] = i-p < p ? tmp[i-p] : list.elem[i-p]; // [3] = old[1]
+    }
+  }
+
+  return list;
+}
+/* 
+题目：
+一个长度为L（L>=1）的升序序列S，处在第[L/2]个位置的数称为S的中位数。
+例如：若序列S1 = {11， 13，15，17，19}，则S1的中位数是15。
+两个序列的中位数是含它们所有元素的升序序列的中位数。
+例如：若S2 = {2，4，6，8，20}，则S1和S2的中位数是11。
+现有两个等长升序序列A和B，试设计一个在时间和空间两方面都尽可能高效的算法，
+找出两个序列A和B的中位数。
+*/
+static int findMidNum(int list1[], int list2[]) {
+  int len1 = sizeof(list1[0]) / sizeof(int);
+  int len2 = sizeof(list2[0]) / sizeof(int);
+  int i = 0, j = 0, k = (len1 + len2) / 2;// 4+ 4=10; 5
+  while(i < len1 && j < len2) {
+    if(i+j == k) {
+      break;
+    }
+    if(list1[i] < list2[j]) {
+      i++;
+    } else {
+      j++;
+    }
+  }
+  
+  printf("%d, %d", list1[i], list2[j]);
+  return 0;
+}
+/* 
+题目：(好好看答案)
+假定采用带头结点的单链表保存单词，
+当两个单词有相同的后缀时候，则可共享相同的存储空间。
+例如：“loading”和“being”的存储映像：
+设str1 和 str2 分别指向两个单词所在单链表的头结点，
+链表结点结构为（data，next），请设计一个时间上尽可能高效的算法，
+找出由str1和str2所指的两个链表共同后缀的起始位置
+（如图中字符i所在结点的位置p）。时间复杂度：O(n^2)  空间复杂度：O(n)
+*/
+static plnode getSameSuffixPosition(plnode str1, plnode str2) {
+  plnode head1 = str1->next;
+  plnode head2 = str2->next;
+
+  while(head1->next != str1) {
+    head1 = head1->next;
+  }
+  while(head2->next != str2) {
+    head2 = head2->next;
+  }
+  // printf("position: node1: %p, node2: %p \n", head1, head2);
+  int tmp = strcmp(head1->data.no, head2->data.no);
+
+  if(tmp != 0) {
+    printf("position: node1: %p, node2: %p \n", str1->data.no, str2->data.no);
+    return str1;
+  }
+  return getSameSuffixPosition(head1, head2);
+}
+/* 
+题目：
+用单链表保存 m 个整数，结点的结构为（data,link）,且|data|<= n（n为正整数）。
+现要设计一个时间复杂度尽可能高效的算法，对于链表中 data 的绝对值相等的结点，
+仅保留第一次出现的结点而删除其余绝对值相等的结点。
+例如：若给定的单链表head如图2.3（a）所示，则删除结点后的 head如图2.3（b）所示。
+*/
+static plnode deleteAbsSameLNode(plnode node, int n) {
+  plnode head = node->next;
+  plnode tmp;
+  int first = 1;
+  while(head != node) {
+    if(head->next->data.price == n || head->next->data.price == -n) {
+      if(first > 1) {
+        tmp = head->next;
+        head->next = head->next->next;
+        free(tmp);
+      } else {
+        head = head->next;
+      }
+      first++;
+    } else {
+      head = head->next;
+    }
+  }
+  return node->next;
+}
+/* 
+题目：（困难）
+已知由n(n>=2)个正整数构成的集合A={ak}（0<=k<n），
+将其划分为两个不相交的子集A1和A2，
+元素个数分别是n1 和n2，A1和A2中元素之和分别为S1和S2.设计一个尽可能高效的划分算法，
+满足|n1-n2|最小且|S1-S2|最大。要求：
+*/
+static int splitTwoLists(int *list1, int *list2) {
+
+}
 /**
   Book book1 = { "wf", "book", 2 };
   Book book2 = { "wf2", "book2", 5 };
