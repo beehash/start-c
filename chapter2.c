@@ -15,6 +15,7 @@ typedef struct DuLNode {
 将两个递增的有序链表合并为一个递增的有序链表。
 要求链表仍然使用原来的两个链表的存储空间，不另外占用其他的存储空间。
 表中不允许有重复的数据。
+时间复杂度：O(n+m)
  */
 static plnode mergesortedLNode(plnode node1, plnode node2) {
   plnode head1 = node1->next; // 获取首元结点
@@ -168,7 +169,7 @@ static plnode getDiffLNode(plnode node1, plnode node2) {
   return node1->next;
 }
 /* 
-设计算法将一个带头结点的单链表A分解为两个具有相同结构的链表C和C，
+设计算法将一个带头结点的单链表A分解为两个具有相同结构的链表B和C，
 其中B表的结点为A表中值小于零的结点，
 而C表的结点为A表中大于零的结点。
 (链表A中的元素为非零整数，要求B、C表利用A表的结点)
@@ -306,6 +307,12 @@ static psqList deleteListByValue(psqList list, int item) {
 在不改变链表的前提下，请设计一个尽可能高效的算法
 查找链表中倒数第k个位置上的结点（k为正整数）。
 若查找成功，算法输出该结点的data域的值，并返回1，否则，只返回0。
+答案题解：
+定义指针p 和 q 
+q指针保持不动，直达p指针移动到 第 k+1个结点的位置
+q和p 现在间距 k 个结点
+p和q同时移动，直到p为 NULL时
+这时 q结点就是该链表上倒数第 k 个结点 
 */
 static int findLNodebyIndex(plnode node, int k) {
   plnode head = node->next;
@@ -334,10 +341,15 @@ static int findLNodebyIndex(plnode node, int k) {
 根据题目可得：采用顺序数据结构
 左移p个位置，那么，倒数第p个位置的变为数组第一个，数组第0个，变为数组第p个，数组最后一个变为 第 length-p+1
 空间复杂度：O(1),时间复杂度：O(n);
+答案解题思路：
+先将n个数据原地逆转，得到 xn-1， xn-2, ...，x0
+再将前 n-p 个数据和后 p 个数据分别原地逆置
+得到最终结果：
+xp,xp+1, ..., xn-1
 */
 static SqList moveNumList(SqList list, int p) {
   int l = list.length; int j = 0;
-  Book tmp[p];
+  Book tmp[p]; // 0 - p 的old 数组元素
 
   for(int i = 0; i < l; i++) {
     if (i < p) { // list2 移动至首端
@@ -358,6 +370,14 @@ static SqList moveNumList(SqList list, int p) {
 例如：若S2 = {2，4，6，8，20}，则S1和S2的中位数是11。
 现有两个等长升序序列A和B，试设计一个在时间和空间两方面都尽可能高效的算法，
 找出两个序列A和B的中位数。
+时间复杂度为 O(n)， 空间复杂度为 O(1)
+答案题解:  ---------------------------waiting
+分别求出序列A和B的中位数，设为 a 和 b
+若 a = b，则 a 或 b 极为所求的中位数
+若 a 小于 b，则舍弃序列A中较小的一半，同时舍弃 B中较大的一半，且要求两次舍弃的元素个数相同
+若 a 大于 b，则设计序列A中较大的一半，同时舍弃 B 中较小的一般，且要求两次舍弃的元素个数相同
+在保留的两个升序序列中，重复上述过程，知道两个序列中均只含有一个元素时为止，较小则即为所求的中位数。
+时间复杂度O(log_2 n), 空间的复杂度O(1)
 */
 static int findMidNum(int list1[], int list2[]) {
   int len1 = sizeof(list1[0]) / sizeof(int);
@@ -385,7 +405,15 @@ static int findMidNum(int list1[], int list2[]) {
 设str1 和 str2 分别指向两个单词所在单链表的头结点，
 链表结点结构为（data，next），请设计一个时间上尽可能高效的算法，
 找出由str1和str2所指的两个链表共同后缀的起始位置
-（如图中字符i所在结点的位置p）。时间复杂度：O(n^2)  空间复杂度：O(n)
+（如图中字符i所在结点的位置p）。
+时间复杂度：O(n^2)  空间复杂度：O(n)
+答案题解：
+1.分别求出链表的长度 m  和 n，它们的差为 k = m-n
+指针 long 和 short 分别指向 较长链表的首元结点 和 较短链表的首元结点
+2. long 先移动 k 个结点长度，short 保持不动
+3. long 和 short 开始同时移动
+4. 比较long == short，地址相同，则为它们的共同起始位置。
+时间复杂度：O(m+n), 空间复杂度为： O(1)
 */
 static plnode getSameSuffixPosition(plnode str1, plnode str2) {
   plnode head1 = str1->next;
@@ -408,10 +436,23 @@ static plnode getSameSuffixPosition(plnode str1, plnode str2) {
 }
 /* 
 题目：
-用单链表保存 m 个整数，结点的结构为（data,link）,且|data|<= n（n为正整数）。
+已知一个整数序列A = （a0,a1,a2,a3,a4,a5,a6,...,an-1）,其中  0 <= ai <n (0 <= i < n)。
+若存在aP1 = ap2 = apm = x,且 m > n/2 （0 <= pk < n, 1 <= k <= m）,则称 x 为 A的主元素
+又如 A = （0, 5, 5, 3, 5, 7, 5, 5）, 其中 5 为主元素。
+假设A中的n个元素保存在一个一维数组中，请设计一个尽可能高效的算法，找出A的主元素。
+若存在主元素，则输出该元素; 否则输出-1。
+*/
+static int findListMainElem(int list[], int len) {
+  // your code
+  return -1;
+}
+/* 
+题目：
+用单链表保存 m 个整数，结点的结构为（data, link）,且|data|<= n（n为正整数）。
 现要设计一个时间复杂度尽可能高效的算法，对于链表中 data 的绝对值相等的结点，
 仅保留第一次出现的结点而删除其余绝对值相等的结点。
 例如：若给定的单链表head如图2.3（a）所示，则删除结点后的 head如图2.3（b）所示。
+时间复杂度：O(n),空间复杂度O(1);
 */
 static plnode deleteAbsSameLNode(plnode node, int n) {
   plnode head = node->next;
@@ -441,6 +482,8 @@ static plnode deleteAbsSameLNode(plnode node, int n) {
 满足|n1-n2|最小且|S1-S2|最大。要求：
 时间复杂度: O(n)
 空间复杂度：O(1)
+答案题解：
+
 */
 static int splitTwoLists(int list[], int len) {
   int diff1 = len, diff2 = 0, diff = 0;
@@ -450,7 +493,9 @@ static int splitTwoLists(int list[], int len) {
   for(int i = 0; i < len; i++) {
     sum += list[i];
   }
+  
   printf("list's summary is %d\n", sum);
+
   for(int i = 0; i < len - 1; i++) {
     n1 = len - i - 1; 
     n2 = i + 1;
@@ -474,7 +519,6 @@ static int splitTwoLists(int list[], int len) {
   }
 
   printf("m：%d, list[m]：%d\n", m, list[m]);// A1 {6, 5, 4, 2} A2 {8, 3, 1, 7, 9}
-
 }
 /**
   Book book1 = { "wf", "book", 2 };
