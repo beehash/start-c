@@ -365,24 +365,24 @@ static SqList moveNumList(SqList list, int p) {
 /* 
 题目：
 一个长度为L（L>=1）的升序序列S，处在第[L/2]个位置的数称为S的中位数。
-例如：若序列S1 = {11， 13，15，17，19}，则S1的中位数是15。
+例如：若序列S1 = {11，13，15，17，19}，则S1的中位数是15。
 两个序列的中位数是含它们所有元素的升序序列的中位数。
-例如：若S2 = {2，4，6，8，20}，则S1和S2的中位数是11。
+例如：若S2 = {2，4，6，8，20}，则S1和S2的中位数是11。2,4,6,8,11,13,15,17,19,20
 现有两个等长升序序列A和B，试设计一个在时间和空间两方面都尽可能高效的算法，
 找出两个序列A和B的中位数。
 时间复杂度为 O(n)， 空间复杂度为 O(1)
-答案题解:  ---------------------------waiting
+答案题解:  ---------------------------------waiting
 分别求出序列A和B的中位数，设为 a 和 b
-若 a = b，则 a 或 b 极为所求的中位数
-若 a 小于 b，则舍弃序列A中较小的一半，同时舍弃 B中较大的一半，且要求两次舍弃的元素个数相同
-若 a 大于 b，则设计序列A中较大的一半，同时舍弃 B 中较小的一般，且要求两次舍弃的元素个数相同
+若 a = b，则 a 或 b 极为所求的中位数   ---n---
+若 a 小于 b，则舍弃序列 A 中较小的一半，同时舍弃 B中较大的一半，且要求两次舍弃的元素个数相同
+若 a 大于 b，则舍弃序列 A 中较大的一半，同时舍弃 B 中较小的一般，且要求两次舍弃的元素个数相同
 在保留的两个升序序列中，重复上述过程，知道两个序列中均只含有一个元素时为止，较小则即为所求的中位数。
 时间复杂度O(log_2 n), 空间的复杂度O(1)
 */
 static int findMidNum(int list1[], int list2[]) {
   int len1 = sizeof(list1[0]) / sizeof(int);
   int len2 = sizeof(list2[0]) / sizeof(int);
-  int i = 0, j = 0, k = (len1 + len2) / 2;// 4+ 4=10; 5
+  int i = 0, j = 0, k = (len1 + len2) / 2; // 4 + 4=10; 5
   while(i < len1 && j < len2) {
     if(i+j == k) {
       break;
@@ -395,6 +395,26 @@ static int findMidNum(int list1[], int list2[]) {
   }
   
   printf("%d, %d", list1[i], list2[j]);
+  return 0;
+}
+static int findMidNum2(int *list1, int *list2, int len1, int len2)  {
+  int i = len1 / 2; //3
+  int j = len2 / 2;
+  
+  printf("list1: %d, list2: %d\n", *(list1), *(list2) );
+  if(len1 == 1 && len2 == 1) {
+    int mid =  *(list1) < *(list2) ? *(list1) : *(list2);
+    printf("中位数：%d\n", mid);
+    return 0;
+  }
+  
+  if(*(list1 + i) < *(list2 + j)) {// 4 6, 0 3  // 2 4, 0 2  // 3 // 1
+    findMidNum2(list1 + i + 1, list2, i, j); // 舍弃 list1 较小部分, 保留 i,   i+len/2, 舍弃 list2 较大部分，
+  } else if(*(list1 + i) > *(list2 + j)) {
+    findMidNum2(list1, list2 + j + 1, i, j); // 舍弃 list1 较大部分，舍弃list2 较小部分
+  } else {
+    return *(list1 + i);
+  }
   return 0;
 }
 /* 
@@ -483,7 +503,13 @@ static plnode deleteAbsSameLNode(plnode node, int n) {
 时间复杂度: O(n)
 空间复杂度：O(1)
 答案题解：
-
+将最小 n/2 个元素放在A1中，其余的元素放在A2中，
+划分结果即可满足要求。该算法并不需要对全部元素进行全排序
+可仿照快速排序的思想，基于枢纽将n个整数划分为两个自己。
+根据划分后枢纽所处的位置i分以下三种情况处理：
+1. 若 i = n/2，则划分成功，算法结束
+2. 若 i < n/2，则枢轴及之前的所有元素均属于A1，继续对i之后的元素进行划分
+3. 若 i > n/2, 则枢轴及之后的所有元素均属于A2，继续对i之前的元素进行划分
 */
 static int splitTwoLists(int list[], int len) {
   int diff1 = len, diff2 = 0, diff = 0;
