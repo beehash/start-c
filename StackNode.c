@@ -8,12 +8,14 @@ typedef struct Node {
 } Node;
 
 typedef struct Stack {
-  Node *top; 
+  Node *top;
+  Node *base;
 } Stack, *StackL;
 
 static StackL initStackNode() {
   StackL s = (StackL)malloc(sizeof(Stack));
   s->top = NULL;
+  s->base = NULL;
   return s;
 }
 
@@ -29,6 +31,9 @@ static void pushStack(StackL s, int e) {
    p->data = e;
    p->next = s->top;
    s->top = p;
+   if(!s->base) {
+    s->base = s->top;
+   }
 }
 
 // 出栈
@@ -37,6 +42,9 @@ static int popStack(StackL s) {
   int e = s->top->data;
   Node *p = s->top;
   s->top = s->top->next;
+  if(!s->top) {
+    s->base = NULL;
+  }
   free(p);
   return e;
 }

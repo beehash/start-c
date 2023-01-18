@@ -393,7 +393,16 @@ void readFilex() {
 
   fclose(filex);
 }
-
+// 获取控制台输入的整数序列
+void getintegerListByConsole() {
+  int i,n;
+  printf("请输入整数序列的长度:");
+  scanf("%d",&n);
+  int array[n];
+  printf("请输入整数序列:");
+  for(i=0;i<n;i++) 
+   scanf("%d",&array[i]);
+}
 // 约瑟夫生死游戏
 void lifeGame() {
   int i = 1; int j = 1, k=0; int a[30]= { 0 };
