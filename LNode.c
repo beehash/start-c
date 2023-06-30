@@ -15,13 +15,24 @@ typedef struct {
   float price; // 图书价格
 } Book;
 
+typedef int number;
+typedef char string;
+
+// typedef enum {string, number, Book} ndata;
+
 union BookStatus {
   Book book;
   int err;
 };
 
+typedef union {
+  int num;
+  char *str;
+  Book book;
+} UnionData;
+
 typedef struct LNode{
-  Book data;
+  UnionData data;
   struct LNode *next;
 } lnode, *plnode;
 
@@ -31,7 +42,7 @@ static lnode *InitLNode () {
   return p;
 }
 
-static Status GetItem(lnode *L, int i, Book *e){
+static Status GetItem(lnode *L, int i, UnionData *e){
   lnode *p = L;
   int j = 0;
   while(p && j<i) {
@@ -44,15 +55,15 @@ static Status GetItem(lnode *L, int i, Book *e){
   return OK;
 }
 
-static lnode* LocateElem(lnode *L, char *e) {
+static lnode* LocateElem(lnode *L, UnionData *e) {
   lnode *p = L;
-  while(p && strcmp(p->data.no, e) != 0) {
+  while(p && memcmp(&p->data, e, sizeof(UnionData)) != 0) {
     p = p->next;
   }
   return p;
 }
 // 结构：头结点-首元结点-结点2-结点3-尾结点
-static Status LNodeInsert(lnode *L, int i, Book e) {// 从0开始
+static Status LNodeInsert(lnode *L, int i, UnionData e) {// 从0开始
   lnode *p = L;
   int j = 0;
   lnode *c=(lnode*)malloc(sizeof(lnode));

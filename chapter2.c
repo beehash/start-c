@@ -25,13 +25,13 @@ static plnode mergesortedLNode(plnode node1, plnode node2) {
   plnode tmp; // 暂存结点 
 
   while(head1 != node1 && head2 != node2) {// 尾结点判断
-    if(head1->data.price > head2->data.price) {// head2 <= head1 head->next = head2
+    if(head1->data.book.price > head2->data.book.price) {// head2 <= head1 head->next = head2
       // head2 head1; head2++; 5, 4 
       head->next = head2; // head->next = head2, head的下一个指针 指向 head2 的当前结点位置
 
       head = head->next; // head 指针移动到下一个结点位置
       head2 = head2->next; // head2 指针指向下一个结点位置
-    } else if(head1->data.price == head2->data.price) { // head1 == head2; head1++ next; head2 next;
+    } else if(head1->data.book.price == head2->data.book.price) { // head1 == head2; head1++ next; head2 next;
       head->next = head1;
       head = head->next;
 
@@ -77,7 +77,7 @@ static plnode mergesortedLNode2(plnode node1, plnode node2) {
   plnode node = node1;
   plnode head = node;
   while(head1 != node1 && head2 != node2) {
-    if(head1->data.price <= head2->data.price) { // head1 head2 ++head1
+    if(head1->data.book.price <= head2->data.book.price) { // head1 head2 ++head1
       head->next = head1;
       head1 = head1->next;
       head = head->next;
@@ -114,7 +114,7 @@ static plnode getSamePartLNode2(plnode node1, plnode node2) {
   plnode head2 = node2->next;
   plnode node = node1;
   while(head1 != node1 && head2 != node2) {
-    if(head1->data.price == head2->data.price) {
+    if(head1->data.book.price == head2->data.book.price) {
       node->next = head1;
       node = node->next;
 
@@ -122,7 +122,7 @@ static plnode getSamePartLNode2(plnode node1, plnode node2) {
       head2 = head2->next;
 
       node->next = node1;
-    } else if(head1->data.price < head2->data.price) {
+    } else if(head1->data.book.price < head2->data.book.price) {
       head1 = head1->next;
     } else {
       head2 = head2->next;
@@ -142,11 +142,11 @@ static plnode getDiffLNode(plnode node1, plnode node2) {
   plnode node = node1;
 
   while(head1 != node1 && head2 != node2) {
-    if(head1->data.price < head2->data.price) {
+    if(head1->data.book.price < head2->data.book.price) {
       node->next = head1;
       head1 = head1->next;
       node = node->next;
-    } else if(head1->data.price > head2->data.price) {
+    } else if(head1->data.book.price > head2->data.book.price) {
       node->next = head1;
       head1 = head1->next;
       node = node->next;
@@ -183,7 +183,7 @@ static plnode splitLNode(plnode A) {
   plnode head2 = node2;
 
   while(head != A) {
-    if(head->data.price > 0) { // >0 的结点
+    if(head->data.book.price > 0) { // >0 的结点
       head2->next = head;
       head2 = head2->next;
     } else { // <0 的结点
@@ -200,13 +200,13 @@ static plnode splitLNode(plnode A) {
 }
 /* 
 题目：
-设计一个算法，通过一趟遍历确定长度为n的单链表中值最大的结点，返回该结点的数据域。
+  设计一个算法，通过一趟遍历确定长度为n的单链表中值最大的结点，返回该结点的数据域。
 */
-static Book getMaxData(plnode node) {
+static UnionData getMaxData(plnode node) {
   plnode head = node->next;
   plnode max = head;
   while(head != node) {
-    if(head->data.price > max->data.price) {
+    if(head->data.book.price > max->data.book.price) {
       max = head;
     }
     head = head->next;
@@ -248,7 +248,7 @@ static plnode deleteLNodefromRange(plnode node, int mink, int maxk) {
   plnode head = node->next;
   plnode prevhead;
   while(head != node) { 
-    if(head->data.price > mink && head->data.price < maxk) {
+    if(head->data.book.price > mink && head->data.book.price < maxk) {
       prevhead->next = prevhead->next->next;
       head = head->next;
     }
@@ -327,7 +327,7 @@ static int findLNodebyIndex(plnode node, int k) {
     head2 = head2->next;
   }
 
-  printf("倒数第%d个结点的值data.price为：%.f\n", k, head2->data.price);
+  printf("倒数第%d个结点的值data.price为：%.f\n", k, head2->data.book.price);
   return  0;
 }
 /* 
@@ -446,10 +446,10 @@ static plnode getSameSuffixPosition(plnode str1, plnode str2) {
     head2 = head2->next;
   }
   // printf("position: node1: %p, node2: %p \n", head1, head2);
-  int tmp = strcmp(head1->data.no, head2->data.no);
+  int tmp = strcmp(head1->data.book.no, head2->data.book.no);
 
   if(tmp != 0) {
-    printf("position: node1: %p, node2: %p \n", str1->data.no, str2->data.no);
+    printf("position: node1: %p, node2: %p \n", str1->data.book.no, str2->data.book.no);
     return str1;
   }
   return getSameSuffixPosition(head1, head2);
@@ -479,7 +479,7 @@ static plnode deleteAbsSameLNode(plnode node, int n) {
   plnode tmp;
   int first = 1;
   while(head != node) {
-    if(head->next->data.price == n || head->next->data.price == -n) {
+    if(head->next->data.book.price == n || head->next->data.book.price == -n) {
       if(first > 1) {
         tmp = head->next;
         head->next = head->next->next;
@@ -570,11 +570,11 @@ static int splitTwoLists(int list[], int len) {
 
   node1 = mergesortedLNode(node1, node2);
   node1 = mergesortedLNode2(node1, node2);
-  printf("%.f, %.f, %.f, ", node1->data.price, node1->next->data.price, node1->next->next->data.price);
+  printf("%.f, %.f, %.f, ", node1->data.book.price, node1->next->data.book.price, node1->next->next->data.book.price);
   node2 = node1->next->next->next;
-  printf("%.f, %.f, %.f, ", node2->data.price, node2->next->data.price, node2->next->next->data.price);
+  printf("%.f, %.f, %.f, ", node2->data.book.price, node2->next->data.book.price, node2->next->next->data.book.price);
   node1 = node2->next->next->next;
-  printf("%.f, %.f", node1->data.price, node1->next->data.price);
+  printf("%.f, %.f", node1->data.book.price, node1->next->data.book.price);
 
 
   SqList list = createList();

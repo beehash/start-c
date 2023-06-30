@@ -2,11 +2,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-struct SElementType {
-  int;
-  char;
-  bool;
-};
+#ifndef SElementType
+  #define SElementType int
+#endif
+
 
 typedef struct {
   int MaxSize;
@@ -19,7 +18,6 @@ static StackL initStack(int MaxSize) {
   s->MaxSize = MaxSize;
   s->base=(SElementType *)malloc(sizeof(SElementType));
   s->top = s->base;
-
 
   return s;
 }
@@ -34,19 +32,19 @@ static bool isFullStack(StackL s) {
   return false;
 }
 
-static int pushStack(StackL s, int num) {
+static int pushStack(StackL s, SElementType num) {
   if(isFullStack(s)) return INT_MIN;
   *s->top++ = num;
   return 0;
 }
 
-static int popStack(StackL s) {
+static SElementType popStack(StackL s) {
   if(isEmptyStack(s)) return INT_MIN;
   int num = *--s->top;
   return num;
 }
 
-static int GetTop(StackL s) {
+static SElementType GetTop(StackL s) {
   if(isEmptyStack(s)) return INT_MIN;
   return *(s->top-1);
 }
